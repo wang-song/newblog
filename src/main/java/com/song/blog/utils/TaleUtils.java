@@ -12,6 +12,7 @@ import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.imageio.ImageIO;
@@ -21,7 +22,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import java.awt.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.Normalizer;
@@ -80,8 +84,11 @@ public class TaleUtils {
         Properties properties = new Properties();
         try {
 //            默认是classPath路径
-            InputStream resourceAsStream = new FileInputStream(fileName);
-            properties.load(resourceAsStream);
+//            InputStream resourceAsStream = new FileInputStream(fileName);
+//            properties.load(resourceAsStream);
+
+            properties.load(new ClassPathResource(fileName).getInputStream());
+
         } catch (TipException | IOException e) {
             LOGGER.error("get properties file fail={}", e.getMessage());
         }
@@ -131,6 +138,26 @@ public class TaleUtils {
                 managerDataSource.setDriverClassName("com.mysql.jdbc.Driver");
                 managerDataSource.setPassword(properties.getProperty("spring.datasource.password"));
                 String str = "jdbc:mysql://" + properties.getProperty("spring.datasource.url") + "/" + properties.getProperty("spring.datasource.dbname") + "?useUnicode=true&characterEncoding=utf-8&useSSL=false";
+                managerDataSource.setUrl(str);
+                managerDataSource.setUsername(properties.getProperty("spring.datasource.username"));
+                newDataSource = managerDataSource;
+            }
+        }
+        return newDataSource;
+    }
+
+
+    public static DataSource getNewDataSourceSqlite() {
+        if (newDataSource == null) synchronized (TaleUtils.class) {
+            if (newDataSource == null) {
+                Properties properties = TaleUtils.getPropFromFile("application-default.properties");
+                if (properties.size() == 0) {
+                    return newDataSource;
+                }
+                DriverManagerDataSource managerDataSource = new DriverManagerDataSource();
+                managerDataSource.setDriverClassName("org.sqlite.JDBC");
+                managerDataSource.setPassword(properties.getProperty("spring.datasource.password"));
+                String str = properties.getProperty("spring.datasource.url");
                 managerDataSource.setUrl(str);
                 managerDataSource.setUsername(properties.getProperty("spring.datasource.username"));
                 newDataSource = managerDataSource;

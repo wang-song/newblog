@@ -274,12 +274,19 @@ public final class Commons {
      * @return
      */
     public static String show_thumb(ContentVo contents) {
-        int cid = contents.getCid();
-        int size = cid % 20;
-        size = size == 0 ? 1 : size;
-        return "/user/img/rand/" + size + ".jpg";
-    }
 
+        String url = "";
+        url = show_thumb(contents.getContent());
+
+        if(!url.equals("")){
+            return url;
+        }else{
+            int cid = contents.getCid();
+            int size = cid % 20;
+            size = size == 0 ? 1 : size;
+            return "/user/img/rand/" + size + ".jpg";
+        }
+    }
 
     /**
      * An :grinning:awesome :smiley:string &#128516;with a few :wink:emojis!

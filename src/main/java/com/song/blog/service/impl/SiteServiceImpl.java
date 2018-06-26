@@ -116,7 +116,7 @@ public class SiteServiceImpl implements ISiteService {
             String sqlFileName = "tale_" + DateKit.dateFormat(new Date(), fmt) + "_" + TaleUtils.getRandomNumber(5) + ".sql";
             String zipFile = sqlFileName.replace(".sql", ".zip");
 
-            Backup backup = new Backup(TaleUtils.getNewDataSource().getConnection());
+            Backup backup = new Backup(TaleUtils.getNewDataSourceSqlite().getConnection());
             String sqlContent = backup.execute();
 
             File sqlFile = new File(bkAttachDir + sqlFileName);
