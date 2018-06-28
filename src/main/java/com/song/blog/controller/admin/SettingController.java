@@ -12,6 +12,7 @@ import com.song.blog.service.ILogService;
 import com.song.blog.service.IOptionService;
 import com.song.blog.service.ISiteService;
 import com.song.blog.utils.GsonUtils;
+import com.song.blog.utils.TaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,14 +94,14 @@ public class SettingController extends BaseController {
      */
     @PostMapping(value = "backup")
     @ResponseBody
-    public RestResponseBo backup(@RequestParam String bk_type, @RequestParam String bk_path,
-                                 HttpServletRequest request) {
+    public RestResponseBo backup(@RequestParam String bk_type, HttpServletRequest request) {
         if (StringUtils.isBlank(bk_type)) {
             return RestResponseBo.fail("请确认信息输入完整");
         }
         try {
-            BackResponseBo backResponse = siteService.backup(bk_type, bk_path, "yyyyMMddHHmm");
+            BackResponseBo backResponse = siteService.backup(bk_type, null, "yyyyMMddHHmm");
             logService.insertLog(LogActions.SYS_BACKUP.getAction(), null, request.getRemoteAddr(), this.getUid(request));
+
             return RestResponseBo.ok(backResponse);
         } catch (Exception e) {
             String msg = "备份失败";
@@ -109,6 +112,53 @@ public class SettingController extends BaseController {
             }
             return RestResponseBo.fail(msg);
         }
+    }
+
+
+    @RequestMapping("/download")
+    public String downloadFile(HttpServletRequest request, HttpServletResponse response,
+                               @RequestParam String filename) {
+
+        if (filename != null) {
+            //设置文件路径
+            String realPath = TaleUtils.getUploadFilePath()+"backup";
+            File file = new File(realPath , filename);
+            if (file.exists()) {
+                response.setContentType("application/force-download");// 设置强制下载不打开
+                response.addHeader("Content-Disposition", "attachment;fileName=" + filename);// 设置文件名
+                byte[] buffer = new byte[1024];
+                FileInputStream fis = null;
+                BufferedInputStream bis = null;
+                try {
+                    fis = new FileInputStream(file);
+                    bis = new BufferedInputStream(fis);
+                    OutputStream os = response.getOutputStream();
+                    int i = bis.read(buffer);
+                    while (i != -1) {
+                        os.write(buffer, 0, i);
+                        i = bis.read(buffer);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (bis != null) {
+                        try {
+                            bis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (fis != null) {
+                        try {
+                            fis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 
 

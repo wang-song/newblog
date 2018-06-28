@@ -130,7 +130,7 @@ public class TaleUtils {
     public static DataSource getNewDataSource() {
         if (newDataSource == null) synchronized (TaleUtils.class) {
             if (newDataSource == null) {
-                Properties properties = TaleUtils.getPropFromFile("application-default.properties");
+                Properties properties = TaleUtils.getPropFromFile("application-dev.properties");
                 if (properties.size() == 0) {
                     return newDataSource;
                 }
@@ -150,7 +150,7 @@ public class TaleUtils {
     public static DataSource getNewDataSourceSqlite() {
         if (newDataSource == null) synchronized (TaleUtils.class) {
             if (newDataSource == null) {
-                Properties properties = TaleUtils.getPropFromFile("application-default.properties");
+                Properties properties = TaleUtils.getPropFromFile("application-dev.properties");
                 if (properties.size() == 0) {
                     return newDataSource;
                 }

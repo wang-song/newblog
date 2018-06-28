@@ -15,6 +15,11 @@ public class ZipUtils {
         ZipOutputStream zip = null;
         FileOutputStream fileWriter = null;
 
+        File file = new File(destZipFile);
+        if(!file.exists()){
+            file.createNewFile();
+        }
+
         fileWriter = new FileOutputStream(destZipFile);
         zip = new ZipOutputStream(fileWriter);
 
@@ -23,11 +28,15 @@ public class ZipUtils {
         zip.close();
     }
 
+
+
+
+
     public static void zipFile(String filePath, String zipPath) throws Exception{
         byte[] buffer = new byte[1024];
         FileOutputStream fos = new FileOutputStream(zipPath);
         ZipOutputStream zos = new ZipOutputStream(fos);
-        ZipEntry ze= new ZipEntry("spy.log");
+        ZipEntry ze= new ZipEntry(new File(filePath).getName());
         zos.putNextEntry(ze);
         FileInputStream in = new FileInputStream(filePath);
         int len;

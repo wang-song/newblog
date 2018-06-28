@@ -9,7 +9,6 @@ import com.song.blog.dao.ContentVoMapper;
 import com.song.blog.dao.MetaVoMapper;
 import com.song.blog.dto.MetaDto;
 import com.song.blog.dto.Types;
-import com.song.blog.exception.TipException;
 import com.song.blog.model.Bo.ArchiveBo;
 import com.song.blog.model.Bo.BackResponseBo;
 import com.song.blog.model.Bo.StatisticsBo;
@@ -18,18 +17,21 @@ import com.song.blog.service.ISiteService;
 import com.song.blog.utils.DateKit;
 import com.song.blog.utils.TaleUtils;
 import com.song.blog.utils.ZipUtils;
-import com.song.blog.utils.backup.Backup;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by BlueT on 2017/3/7.
@@ -38,6 +40,8 @@ import java.util.*;
 public class SiteServiceImpl implements ISiteService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SiteServiceImpl.class);
+
+    private static final String BACKUP_PATH = "backup";
 
     @Resource
     private CommentVoMapper commentDao;
@@ -65,6 +69,41 @@ public class SiteServiceImpl implements ISiteService {
         return byPage;
     }
 
+
+    @Override
+    public BackResponseBo backup(String bk_type, String bk_path, String fmt) throws Exception {
+        BackResponseBo backResponse = new BackResponseBo();
+        if (bk_type.equals("attach")) {
+            String bkAttachDir = AttachController.CLASSPATH + "upload";
+            String fname = DateKit.dateFormat(new Date(), fmt) + "_" + TaleUtils.getRandomNumber(5) + ".zip";
+            String attachPath = BACKUP_PATH + "/" + "attachs_" + fname;
+
+            File file = new File(AttachController.CLASSPATH + BACKUP_PATH);
+            if(!file.exists()){
+                file.mkdirs();
+            }
+
+            ZipUtils.zipFolder(bkAttachDir, attachPath);
+            backResponse.setAttachPath("attachs_" + fname);
+        }
+        if (bk_type.equals("db")) {
+
+            String fname = DateKit.dateFormat(new Date(), fmt) + "_" + TaleUtils.getRandomNumber(5) + ".zip";
+            String dbPath = BACKUP_PATH + "/" + "db_" + fname;
+
+            File file = new File(AttachController.CLASSPATH + BACKUP_PATH);
+            if(!file.exists()){
+                file.mkdirs();
+            }
+
+            ZipUtils.zipFile(ResourceUtils.getFile("classpath:newblog.db").getAbsolutePath(),dbPath);
+
+            backResponse.setAttachPath("db_" + fname);
+
+        }
+        return backResponse;
+    }
+
     @Override
     public List<ContentVo> recentContents(int limit) {
         LOGGER.debug("Enter recentContents method");
@@ -80,68 +119,7 @@ public class SiteServiceImpl implements ISiteService {
         return list;
     }
 
-    @Override
-    public BackResponseBo backup(String bk_type, String bk_path, String fmt) throws Exception {
-        BackResponseBo backResponse = new BackResponseBo();
-        if (bk_type.equals("attach")) {
-            if (StringUtils.isBlank(bk_path)) {
-                throw new TipException("请输入备份文件存储路径");
-            }
-            if (!(new File(bk_path)).isDirectory()) {
-                throw new TipException("请输入一个存在的目录");
-            }
-            String bkAttachDir = AttachController.CLASSPATH + "upload";
-            String bkThemesDir = AttachController.CLASSPATH + "templates/themes";
 
-            String fname = DateKit.dateFormat(new Date(), fmt) + "_" + TaleUtils.getRandomNumber(5) + ".zip";
-
-            String attachPath = bk_path + "/" + "attachs_" + fname;
-            String themesPath = bk_path + "/" + "themes_" + fname;
-
-            ZipUtils.zipFolder(bkAttachDir, attachPath);
-            ZipUtils.zipFolder(bkThemesDir, themesPath);
-
-            backResponse.setAttachPath(attachPath);
-            backResponse.setThemePath(themesPath);
-        }
-        if (bk_type.equals("db")) {
-
-            String bkAttachDir = AttachController.CLASSPATH + "upload/";
-            if (!(new File(bkAttachDir)).isDirectory()) {
-                File file = new File(bkAttachDir);
-                if (!file.exists()) {
-                    file.mkdirs();
-                }
-            }
-            String sqlFileName = "tale_" + DateKit.dateFormat(new Date(), fmt) + "_" + TaleUtils.getRandomNumber(5) + ".sql";
-            String zipFile = sqlFileName.replace(".sql", ".zip");
-
-            Backup backup = new Backup(TaleUtils.getNewDataSourceSqlite().getConnection());
-            String sqlContent = backup.execute();
-
-            File sqlFile = new File(bkAttachDir + sqlFileName);
-            write(sqlContent, sqlFile, Charset.forName("UTF-8"));
-
-            String zip = bkAttachDir + zipFile;
-            ZipUtils.zipFile(sqlFile.getPath(), zip);
-
-            if (!sqlFile.exists()) {
-                throw new TipException("数据库备份失败");
-            }
-            sqlFile.delete();
-
-            backResponse.setSqlPath(zipFile);
-
-            // 10秒后删除备份文件
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    new File(zip).delete();
-                }
-            }, 10 * 1000);
-        }
-        return backResponse;
-    }
 
     @Override
     public CommentVo getComment(Integer coid) {
@@ -239,5 +217,69 @@ public class SiteServiceImpl implements ISiteService {
         }
 
     }
+
+
+//    @Override
+//    public BackResponseBo backup(String bk_type, String bk_path, String fmt) throws Exception {
+//        BackResponseBo backResponse = new BackResponseBo();
+//        if (bk_type.equals("attach")) {
+//            if (StringUtils.isBlank(bk_path)) {
+//                throw new TipException("请输入备份文件存储路径");
+//            }
+//            if (!(new File(bk_path)).isDirectory()) {
+//                throw new TipException("请输入一个存在的目录");
+//            }
+//            String bkAttachDir = AttachController.CLASSPATH + "upload";
+//            String bkThemesDir = AttachController.CLASSPATH + "templates/themes";
+//
+//            String fname = DateKit.dateFormat(new Date(), fmt) + "_" + TaleUtils.getRandomNumber(5) + ".zip";
+//
+//            String attachPath = BACKUP_PATH + "/" + "attachs_" + fname;
+//            String themesPath = bk_path + "/" + "themes_" + fname;
+//
+//            ZipUtils.zipFolder(bkAttachDir, attachPath);
+//            ZipUtils.zipFolder(bkThemesDir, themesPath);
+//
+//            backResponse.setAttachPath(attachPath);
+//            backResponse.setThemePath(themesPath);
+//        }
+//        if (bk_type.equals("db")) {
+//
+//            String bkAttachDir = AttachController.CLASSPATH + "upload/";
+//            if (!(new File(bkAttachDir)).isDirectory()) {
+//                File file = new File(bkAttachDir);
+//                if (!file.exists()) {
+//                    file.mkdirs();
+//                }
+//            }
+//            String sqlFileName = "tale_" + DateKit.dateFormat(new Date(), fmt) + "_" + TaleUtils.getRandomNumber(5) + ".sql";
+//            String zipFile = sqlFileName.replace(".sql", ".zip");
+//
+//            Backup backup = new Backup(TaleUtils.getNewDataSourceSqlite().getConnection());
+//            String sqlContent = backup.execute();
+//
+//            File sqlFile = new File(bkAttachDir + sqlFileName);
+//            write(sqlContent, sqlFile, Charset.forName("UTF-8"));
+//
+//            String zip = bkAttachDir + zipFile;
+//            ZipUtils.zipFile(sqlFile.getPath(), zip);
+//
+//            if (!sqlFile.exists()) {
+//                throw new TipException("数据库备份失败");
+//            }
+//            sqlFile.delete();
+//
+//            backResponse.setSqlPath(zipFile);
+//
+//            // 10秒后删除备份文件
+//            new Timer().schedule(new TimerTask() {
+//                @Override
+//                public void run() {
+//                    new File(zip).delete();
+//                }
+//            }, 10 * 1000);
+//        }
+//        return backResponse;
+//    }
 
 }
