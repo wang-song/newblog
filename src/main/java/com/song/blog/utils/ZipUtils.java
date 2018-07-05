@@ -1,8 +1,6 @@
 package com.song.blog.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -16,7 +14,7 @@ public class ZipUtils {
         FileOutputStream fileWriter = null;
 
         File file = new File(destZipFile);
-        if(!file.exists()){
+        if (!file.exists()) {
             file.createNewFile();
         }
 
@@ -29,14 +27,11 @@ public class ZipUtils {
     }
 
 
-
-
-
-    public static void zipFile(String filePath, String zipPath) throws Exception{
+    public static void zipFile(String filePath, String zipPath) throws Exception {
         byte[] buffer = new byte[1024];
         FileOutputStream fos = new FileOutputStream(zipPath);
         ZipOutputStream zos = new ZipOutputStream(fos);
-        ZipEntry ze= new ZipEntry(new File(filePath).getName());
+        ZipEntry ze = new ZipEntry(new File(filePath).getName());
         zos.putNextEntry(ze);
         FileInputStream in = new FileInputStream(filePath);
         int len;
@@ -82,4 +77,25 @@ public class ZipUtils {
         }
     }
 
-} 
+
+    /**
+     * 将InputStream写入本地文件
+     *
+     * @param destination 写入本地目录
+     * @param input       输入流
+     * @throws IOException
+     */
+    public static void writeToLocal(InputStream input, String destination)
+            throws IOException {
+        int index;
+        byte[] bytes = new byte[1024];
+        FileOutputStream downloadFile = new FileOutputStream(destination);
+        while ((index = input.read(bytes)) != -1) {
+            downloadFile.write(bytes, 0, index);
+            downloadFile.flush();
+        }
+        downloadFile.close();
+        input.close();
+    }
+}
+

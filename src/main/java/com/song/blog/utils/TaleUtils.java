@@ -455,4 +455,26 @@ public class TaleUtils {
         File file = new File("");
         return file.getAbsolutePath() + "/";
     }
+
+
+    /**
+     * 判断文件是否存在
+     * @param strFile 文件的路径
+     * @return
+     */
+    public static boolean fileIsExists(String strFile) {
+        try {
+            File f=new File(strFile);
+            if(!f.exists()) {
+                return false;
+            }
+
+        }
+        catch (Exception e) {
+            return false;
+        }
+
+        return true;
+
+    }
 }

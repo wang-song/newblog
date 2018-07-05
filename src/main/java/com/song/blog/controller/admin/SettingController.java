@@ -100,7 +100,16 @@ public class SettingController extends BaseController {
         }
         try {
             BackResponseBo backResponse = siteService.backup(bk_type, null, "yyyyMMddHHmm");
-            logService.insertLog(LogActions.SYS_BACKUP.getAction(), null, request.getRemoteAddr(), this.getUid(request));
+
+            if (bk_type.equals("attach")) {
+                logService.insertLog(LogActions.SYS_BACKUP_ATTACH.getAction(),
+                        null, request.getRemoteAddr(), this.getUid(request));
+            }
+            if (bk_type.equals("db")) {
+                logService.insertLog(LogActions.SYS_BACKUP_DATABASE.getAction(),
+                        null, request.getRemoteAddr(), this.getUid(request));
+            }
+
 
             return RestResponseBo.ok(backResponse);
         } catch (Exception e) {

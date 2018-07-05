@@ -109,7 +109,7 @@ public class AttachController extends BaseController {
             }
             attachService.deleteById(id);
             new File(CLASSPATH + attach.getFkey()).delete();
-            logService.insertLog(LogActions.DEL_ARTICLE.getAction(), attach.getFkey(), request.getRemoteAddr(), this.getUid(request));
+            logService.insertLog(LogActions.DEL_ATTACH.getAction(), attach.getFkey(), request.getRemoteAddr(), this.getUid(request));
         } catch (Exception e) {
             String msg = "附件删除失败";
             LOGGER.error(msg, e);

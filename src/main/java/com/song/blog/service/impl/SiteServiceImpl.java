@@ -21,7 +21,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 
 import javax.annotation.Resource;
 import java.io.File;
@@ -96,7 +95,13 @@ public class SiteServiceImpl implements ISiteService {
                 file.mkdirs();
             }
 
-            ZipUtils.zipFile(ResourceUtils.getFile("classpath:newblog.db").getAbsolutePath(),dbPath);
+
+            ZipUtils.zipFile(BACKUP_PATH + "/newblog.db",dbPath);
+
+//            ZipUtils.writeToLocal(getClass().getClassLoader()
+//                    .getResourceAsStream("newblog.db"),AttachController.CLASSPATH + dbPath);
+
+
 
             backResponse.setAttachPath("db_" + fname);
 
