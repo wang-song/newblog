@@ -13,14 +13,12 @@ import org.commonmark.renderer.html.HtmlRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.sql.DataSource;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -54,8 +52,7 @@ public class TaleUtils {
     private static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     private static final Pattern SLUG_REGEX = Pattern.compile("^[A-Za-z0-9_-]{5,100}$", Pattern.CASE_INSENSITIVE);
-    // 使用双重检查锁的单例方式需要添加 volatile 关键字
-    private static volatile DataSource newDataSource;
+
     /**
      * markdown解析器
      */
@@ -122,49 +119,6 @@ public class TaleUtils {
         return hexString.toString();
     }
 
-    /**
-     * 获取新的数据源
-     *
-     * @return
-     */
-    public static DataSource getNewDataSource() {
-        if (newDataSource == null) synchronized (TaleUtils.class) {
-            if (newDataSource == null) {
-                Properties properties = TaleUtils.getPropFromFile("application-dev.properties");
-                if (properties.size() == 0) {
-                    return newDataSource;
-                }
-                DriverManagerDataSource managerDataSource = new DriverManagerDataSource();
-                managerDataSource.setDriverClassName("com.mysql.jdbc.Driver");
-                managerDataSource.setPassword(properties.getProperty("spring.datasource.password"));
-                String str = "jdbc:mysql://" + properties.getProperty("spring.datasource.url") + "/" + properties.getProperty("spring.datasource.dbname") + "?useUnicode=true&characterEncoding=utf-8&useSSL=false";
-                managerDataSource.setUrl(str);
-                managerDataSource.setUsername(properties.getProperty("spring.datasource.username"));
-                newDataSource = managerDataSource;
-            }
-        }
-        return newDataSource;
-    }
-
-
-    public static DataSource getNewDataSourceSqlite() {
-        if (newDataSource == null) synchronized (TaleUtils.class) {
-            if (newDataSource == null) {
-                Properties properties = TaleUtils.getPropFromFile("application-dev.properties");
-                if (properties.size() == 0) {
-                    return newDataSource;
-                }
-                DriverManagerDataSource managerDataSource = new DriverManagerDataSource();
-                managerDataSource.setDriverClassName("org.sqlite.JDBC");
-                managerDataSource.setPassword(properties.getProperty("spring.datasource.password"));
-                String str = properties.getProperty("spring.datasource.url");
-                managerDataSource.setUrl(str);
-                managerDataSource.setUsername(properties.getProperty("spring.datasource.username"));
-                newDataSource = managerDataSource;
-            }
-        }
-        return newDataSource;
-    }
 
     /**
      * 返回当前登录用户
@@ -473,8 +427,52 @@ public class TaleUtils {
         catch (Exception e) {
             return false;
         }
-
         return true;
-
     }
+
+
+    /**
+     * 获取新的数据源
+     *
+     * @return
+    //     */
+//    public static DataSource getNewDataSource() {
+//        if (newDataSource == null) synchronized (TaleUtils.class) {
+//            if (newDataSource == null) {
+//                Properties properties = TaleUtils.getPropFromFile("application-dev.properties");
+//                if (properties.size() == 0) {
+//                    return newDataSource;
+//                }
+//                DriverManagerDataSource managerDataSource = new DriverManagerDataSource();
+//                managerDataSource.setDriverClassName("com.mysql.jdbc.Driver");
+//                managerDataSource.setPassword(properties.getProperty("spring.datasource.password"));
+//                String str = "jdbc:mysql://" + properties.getProperty("spring.datasource.url") + "/" + properties.getProperty("spring.datasource.dbname") + "?useUnicode=true&characterEncoding=utf-8&useSSL=false";
+//                managerDataSource.setUrl(str);
+//                managerDataSource.setUsername(properties.getProperty("spring.datasource.username"));
+//                newDataSource = managerDataSource;
+//            }
+//        }
+//        return newDataSource;
+//    }
+
+//
+//    public static DataSource getNewDataSourceSqlite() {
+//        if (newDataSource == null) synchronized (TaleUtils.class) {
+//            if (newDataSource == null) {
+//                Properties properties = TaleUtils.getPropFromFile("application-dev.properties");
+//                if (properties.size() == 0) {
+//                    return newDataSource;
+//                }
+//                DriverManagerDataSource managerDataSource = new DriverManagerDataSource();
+//                managerDataSource.setDriverClassName("org.sqlite.JDBC");
+//                managerDataSource.setPassword(properties.getProperty("spring.datasource.password"));
+//                String str = properties.getProperty("spring.datasource.url");
+//                managerDataSource.setUrl(str);
+//                managerDataSource.setUsername(properties.getProperty("spring.datasource.username"));
+//                newDataSource = managerDataSource;
+//            }
+//        }
+//        return newDataSource;
+//    }
+
 }
