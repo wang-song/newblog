@@ -132,6 +132,7 @@ $.tale.prototype.post = function (options) {
         url: options.url,
         data: options.data || {},
         async: options.async || false,
+        xhrFields:{withCredentials: true},
         dataType: 'json',
         success: function (result) {
             self.hideLoading();
@@ -159,3 +160,5 @@ $.tale.prototype.showLoading = function () {
 $.tale.prototype.hideLoading = function () {
     $('#tale-loading') && $('#tale-loading').hide();
 };
+
+

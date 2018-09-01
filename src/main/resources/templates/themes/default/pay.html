@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<link th:href="@{//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css}" rel="stylesheet"/>
+<link th:href="@{//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css}" rel="stylesheet" type="text/css"/>
+<link th:href="@{//cdn.bootcss.com/limonte-sweetalert2/6.4.1/sweetalert2.min.css}" rel="stylesheet"/>
+<link th:href="@{/admin/css/mailAutoComplete.css}" rel="stylesheet"/>
+<div th:replace="themes/default/header::header(title='付款页面',keywords=null)"></div>
+
+
+<body>
+
+<article class="main-content post-page">
+    <div id="post-content" class="post-content">
+
+        <h3>购买提卡密码</h3>
+
+        购买提卡密码，相同金额的卡密可以通用，购买完成后，在提取页面输入卡密就可以提取。<br/>
+        正常情况下，卡密会在支付成功后1分钟内，自动发送到你指定的邮箱中。<br/>
+        也可以用订单号或者邮箱在<a href="http://www.admin333.com/OrderQuery.html" target="_blank" style='color:red;'>此处查询</a>。<br/>
+        推荐使用微信或者 QQ 扫码付款，如果使用支付宝，订单金额需要大于等于2元。
+        <p></p>
+        <form id="myform" method="post" name="myform" target="_blank" onsubmit="return checkForm()">
+            <!--订单自定义项目-->
+            请选择卡面额：
+            <select name="productId" style="width:180px;background-color:#13a3ff">
+                <option value="199793">卡密 面额 0.5 元</option>
+                <option value="199794" selected="selected">卡密 面额 1.0 元</option>
+                <option value="199795">卡密 面额 2.0 元</option>
+                <option value="199796">卡密 面额 3.0 元</option>
+                <option value="199797">卡密 面额 5.0 元</option>
+                <option value="199798">卡密 面额 10 元</option>
+            </select>
+            （下拉可以选择不同面额，1-20元）<br/>
+            输入<B style='color:red;background-color:#FFFF00'>邮箱地址</b>：
+            <input type="text" id="email" name="email" placeholder="请输入邮箱" />
+
+            （<B style='color:red;background-color:#FFFF00'>必填，卡密会自动发送到这个电子邮箱中</b>）<br/><br/>
+            请选付款方式：
+            <font color="green">
+                <label><input type="radio" checked="checked" name="paymentType" value="56"/>微信扫码</label>
+                <font color="red">〡〡</font>
+                <label><input type="radio" name="paymentType" value="58"/>手机QQ扫码</label>
+                <font color="red">〡〡</font>
+                <label><input type="radio" name="paymentType" value="54"/>支付宝(需要大于2元)</label>
+
+            </font>
+
+            <a href="javascript:void(0);" title="点击更换验证码">
+                <img id="imgVerify" src="/verify/getVerify" alt="更换验证码" height="36" width="20%"
+                     onclick="getVerify(this);">
+            </a>
+            <br>
+            请输入验证码：
+            <input type="tel" id="verifyInput" name="verifyInput" placeholder="请输入验证码"
+                   maxlength="4">
+
+            然后，<input type="submit" id="btn-submit" style="background-color:#13a3ff"
+                      value="点这里，提交订单，扫码付款">
+            <noscript>
+                <div id="noscript_msg" class="msg"><font color="red" size=5>
+                    </br>你的浏览器禁用了JavaScript，系统无法获取订单信息！</br></br>
+                    <a href="http://360.bgu.edu.cn/help/openJsHelp.html" target="_blank">JavaScript是什么，如何开启它，想知道点这里？</a></font>
+                </div>
+            </noscript>
+
+        </form>
+
+    </div>
+</article>
+
+<script th:src="@{//cdn.bootcss.com/jquery/2.2.3/jquery.min.js}"></script>
+<script th:src="@{//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+<script th:src="@{//cdn.bootcss.com/limonte-sweetalert2/6.4.1/sweetalert2.min.js}"></script>
+<script th:src="@{/admin/js/mailAutoComplete.js}"></script>
+<script th:src="@{/admin/js/base.js}"></script>
+<script type="text/javascript">
+    var url = "/verify/getVerify?" + Math.random();
+    // window.onload = function(){
+    //
+    //     $("#imgVerify").attr('src',url);
+    // };
+
+    $("#email").mailAutoComplete();
+
+    var tale = new $.tale();
+
+    function getVerify(obj) {
+        obj.src = url;
+    }
+
+    function checkForm() {
+        var verifyInput = $('#verifyInput').val();
+        tale.post({
+            url: '/verify/checkVerify',
+            data: {verifyInput:verifyInput},
+            success: function (result) {
+                if (result && result.success) {
+                    tale.post({
+                        url: '/pay/pay',
+                        data: $("#myform").serialize(),
+                        success: function (result) {
+                            if (result && result.success) {
+                                window.location.reload();
+                                window.open("http://www.admin333.com/Pay-"+result.payload+".html","_blank");
+                            } else {
+                                tale.alertError(result.msg || '登录失败');
+                            }
+                        }
+                    });
+
+                } else {
+                    tale.alertError(result.msg || '验证失败');
+                }
+                $("#imgVerify").attr('src',url);
+            }
+        });
+
+
+
+
+        return false;
+    }
+</script>
+
+
+</body>
+<div th:replace="themes/default/footer::footer"></div>
+</html>

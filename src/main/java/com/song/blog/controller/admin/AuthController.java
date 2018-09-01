@@ -52,10 +52,11 @@ public class AuthController extends BaseController {
                                   @RequestParam String password,
                                   @RequestParam(required = false) String remeber_me,
                                   HttpServletRequest request,
-                                  HttpServletResponse response) {
-
+                                  HttpServletResponse response,
+                                  HttpSession session) {
         Integer error_count = cache.get("login_error_count");
         try {
+
             UserVo user = usersService.login(username, password);
             request.getSession().setAttribute(WebConst.LOGIN_SESSION_KEY, user);
             if (StringUtils.isNotBlank(remeber_me)) {
