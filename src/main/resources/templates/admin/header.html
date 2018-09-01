@@ -81,7 +81,8 @@
                             class="fa fa-list" aria-hidden="true"></i><span> 文章管理 </span></a>
                 </li>
                 <li th:class="${active}=='page'?'active':''">
-                    <a th:href="@{/admin/page}" th:class="${active}=='page'?'waves-effect active':'waves-effect'"><i
+                    <a th:href="@{/admin/page}"
+                       th:class="${active}=='page'?'waves-effect active':'waves-effect'"><i
                             class="fa fa-file-text" aria-hidden="true"></i><span> 页面管理 </span></a>
                 </li>
                 <li th:class="${active}=='comments'?'active':''">
@@ -99,22 +100,24 @@
                        th:class="${active}=='attach'?'waves-effect active':'waves-effect'"><i
                             class="fa fa-cloud-upload" aria-hidden="true"></i><span> 文件管理 </span></a>
                 </li>
-
                 <li th:class="${active}=='secret'?'active':''">
                     <a th:href="@{/admin/secret}"
-                       th:class="${active}=='secret'?'waves-effect active':'waves-effect'"><i
-                            class="fa fa-list" aria-hidden="true"></i><span> 卡密管理 </span></a>
+                       th:class="${active}=='secret'?'waves-effect active':'waves-effect'">
+                        <i class="fa fa-book" aria-hidden="true"></i><span> 卡密管理 </span></a>
                 </li>
 
                 <li th:class="${active}=='links'?'active':''">
-                    <a th:href="@{/admin/links}" th:class="${active}=='links'?'waves-effect active':'waves-effect'"><i
+                    <a th:href="@{/admin/links}"
+                       th:class="${active}=='links'?'waves-effect active':'waves-effect'"><i
                             class="fa fa-link" aria-hidden="true"></i><span> 友链管理 </span></a>
                 </li>
+
                 <li th:class="${active}=='setting'?'active':''">
                     <a th:href="@{/admin/setting}"
                        th:class="${active}=='setting'?'waves-effect active':'waves-effect'"><i
                             class="fa fa-gear" aria-hidden="true"></i><span> 系统设置 </span></a>
                 </li>
+
             </ul>
             <div class="clearfix"></div>
         </div>

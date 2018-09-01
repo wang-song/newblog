@@ -126,3 +126,12 @@ CREATE TABLE t_users (
 INSERT INTO `t_users` VALUES ('1', 'admin', 'a66abb5684c45962d887564f08346e8d', '1034683568@qq.com', null, 'admin', '1490756162', '0', '0', 'visitor');
 
 
+-- 表：t_secret
+DROP TABLE IF EXISTS t_secret;
+CREATE TABLE t_secret (
+	sid INTEGER PRIMARY KEY UNIQUE NOT NULL,
+	serial_number VARCHAR (64) UNIQUE NOT NULL,
+	money FLOAT NOT NULL,
+	use_time INTEGER (10) DEFAULT (NULL),
+	user VARCHAR (50),
+	description VARCHAR (100));
