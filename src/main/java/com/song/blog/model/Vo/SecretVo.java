@@ -5,6 +5,7 @@ public class SecretVo {
 
     private String serialNumber;
 
+
     private Double money;
 
     private Integer useTime;
@@ -12,6 +13,14 @@ public class SecretVo {
     private String user;
 
     private String description;
+
+    public SecretVo() {}
+
+
+    public SecretVo(String serialNumber, Double money) {
+        this.serialNumber = serialNumber;
+        this.money = money;
+    }
 
     public Integer getSid() {
         return sid;

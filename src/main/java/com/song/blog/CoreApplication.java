@@ -1,8 +1,6 @@
 package com.song.blog;
 
-import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.song.blog.utils.TaleUtils;
-import com.song.blog.utils.ZipUtils;
 import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;
 import org.apache.tomcat.util.descriptor.web.SecurityCollection;
@@ -16,10 +14,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import javax.sql.DataSource;
-import java.io.File;
-import java.io.IOException;
 
 @MapperScan("com.song.blog.dao")
 @SpringBootApplication
@@ -35,25 +29,25 @@ public class CoreApplication {
     @Value("${server.port}")
     private int httpsport;
 
-    @Bean
-    public DataSource dataSource() throws IOException {
-        File file = new File(path);
-        if(!file.exists()){
-            file.mkdirs();
-        }
-        LOGGER.debug("path is：{},panduan data file newblog.db,if has return，if not copy resources file",path);
-
-
-        if(TaleUtils.fileIsExists(path+"/newblog.db")){
-            LOGGER.debug("data file is has，return DataSource");
-        }else {
-            ZipUtils.writeToLocal(getClass().getClassLoader()
-                    .getResourceAsStream("newblog.db"),path + "/newblog.db");
-            LOGGER.debug("init DruidDataSource，copy data file to backup wenjianjiazhong，lianjie backup zhong data file");
-        }
-
-        return DruidDataSourceBuilder.create().build();
-    }
+//    @Bean
+//    public DataSource dataSource() throws IOException {
+//        File file = new File(path);
+//        if(!file.exists()){
+//            file.mkdirs();
+//        }
+//        LOGGER.debug("path is：{},panduan data file newblog.db,if has return，if not copy resources file",path);
+//
+//
+//        if(TaleUtils.fileIsExists(path+"/newblog.db")){
+//            LOGGER.debug("data file is has，return DataSource");
+//        }else {
+//            ZipUtils.writeToLocal(getClass().getClassLoader()
+//                    .getResourceAsStream("newblog.db"),path + "/newblog.db");
+//            LOGGER.debug("init DruidDataSource，copy data file to backup wenjianjiazhong，lianjie backup zhong data file");
+//        }
+//
+//        return DruidDataSourceBuilder.create().build();
+//    }
 
 
 
