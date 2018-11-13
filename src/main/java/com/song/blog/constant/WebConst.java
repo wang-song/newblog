@@ -50,7 +50,7 @@ public class WebConst {
     /**
      * 上传文件最大1M
      */
-    public static Integer MAX_FILE_SIZE = 1048576;
+    public static Integer MAX_FILE_SIZE = 2048000;
 
     /**
      * 成功返回

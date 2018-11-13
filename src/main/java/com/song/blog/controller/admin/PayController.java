@@ -56,7 +56,7 @@ public class PayController extends BaseController {
             Product product = new Product();
             product.setOrderNO("0");
             product.setProductId(productId);
-            product.setTotalCount(1);
+            product.setTotalCount("1");
             product.setEmail(email);
             product.setContact(email);
             product.setPaymentType(paymentType);
@@ -70,6 +70,9 @@ public class PayController extends BaseController {
                 case "58":
                     product.setUserPaymentId("5135948");
                     break;
+
+                default:
+
             }
             LOGGER.debug(product.toString());
             HttpConfig config = HttpConfig.custom().url(SHOPURL + productId + ".html").map(product.toMap());

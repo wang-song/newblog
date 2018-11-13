@@ -11,7 +11,7 @@ public class Product {
     private String productId;
 
     //买的数量
-    private int totalCount;
+    private String totalCount;
 
     //邮箱
     private String email;
@@ -48,11 +48,11 @@ public class Product {
         this.productId = productId;
     }
 
-    public int getTotalCount() {
+    public String getTotalCount() {
         return totalCount;
     }
 
-    public void setTotalCount(int totalCount) {
+    public void setTotalCount(String totalCount) {
         this.totalCount = totalCount;
     }
 
@@ -93,7 +93,7 @@ public class Product {
         return "Product{" +
                 "orderNO='" + orderNO + '\'' +
                 ", productId='" + productId + '\'' +
-                ", totalCount=" + totalCount +
+                ", totalCount='" + totalCount + '\'' +
                 ", email='" + email + '\'' +
                 ", contact='" + contact + '\'' +
                 ", paymentType='" + paymentType + '\'' +
