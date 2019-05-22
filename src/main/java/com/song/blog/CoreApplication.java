@@ -4,7 +4,6 @@ import com.song.blog.utils.TaleUtils;
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -18,10 +17,10 @@ public class CoreApplication {
     private static final Logger LOGGER = LoggerFactory.getLogger(CoreApplication.class);
 
 
-    @Value("${wangsong.httpport}")
-    private int httpport;
-    @Value("${server.port}")
-    private int httpsport;
+//    @Value("${wangsong.httpport}")
+//    private int httpport;
+//    @Value("${server.port}")
+//    private int httpsport;
 
 //    @Bean
 //    public DataSource dataSource() throws IOException {
