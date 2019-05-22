@@ -17,25 +17,24 @@ import javax.servlet.http.HttpSession;
  * Created by 13 on 2017/2/21.
  */
 @Controller
-@RequestMapping("/pay")
-public class PayController extends BaseController {
+@RequestMapping("/query_link")
+public class QueryLinkController extends BaseController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PayController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(QueryLinkController.class);
 
 
     @GetMapping(value = "")
     public String index() {
 
-        return this.render("pay");
+        return this.render("query_link");
     }
 
-    @RequestMapping("/pay")
+    @RequestMapping("/query")
     @ResponseBody
     public RestResponseBo pay(HttpSession session,
                               @RequestParam String productId) {
 
         RestResponseBo restResponseBo = new RestResponseBo();
-
         try {
 
             restResponseBo.setPayload(productId);

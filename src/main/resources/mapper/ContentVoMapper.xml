@@ -19,7 +19,7 @@
     <result column="allow_feed" jdbcType="BIT" property="allowFeed" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.song.blog.model.Vo.ContentVo">
-    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>

@@ -17,7 +17,7 @@
     <result column="parent" jdbcType="INTEGER" property="parent" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.song.blog.model.Vo.CommentVo">
-    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>

@@ -4,7 +4,7 @@
 <link th:href="@{//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css}" rel="stylesheet" type="text/css"/>
 <link th:href="@{//cdn.bootcss.com/limonte-sweetalert2/6.4.1/sweetalert2.min.css}" rel="stylesheet"/>
 <link th:href="@{/admin/css/mailAutoComplete.css}" rel="stylesheet"/>
-<div th:replace="themes/default/header::header(title='付款页面',keywords=null)"></div>
+<div th:replace="themes/default/header::header(title='提取下面链接页面',keywords=null)"></div>
 
 
 <body>
@@ -12,17 +12,20 @@
 <article class="main-content post-page">
     <div id="post-content" class="post-content">
 
-        <h3>购买提卡密码</h3>
+        <h3>卡密提取软件下载链接</h3>
 
-        购买卡密，相同金额的卡密可以通用，购买完成后，在<a href="./query_link" target="_blank" style='color:red;'>提取页面</a>输入卡密就可以提取软件下载链接。<br/>
-        提交订单后，在弹出的页面自己选择微信或者支付宝支付。<br/>
-        联系方式建议填上，购买的用于查询卡密，支付成功后，卡密会在页面上显示给你。<br/>
-        也可以用订单号或者联系方式在<a href="http://www.admin333.com/OrderQuery.html" target="_blank" style='color:red;'>此处查询</a>。<br/>
+        购买卡密后，在此页面提取软件下载链接。<br/>
+        没有卡密的在<a href="./pay" target="_blank" style='color:red;'>购买卡密页面</a>购买卡密，然后再提取下载链接。<br/>
+        支付完成后可以用订单号或者邮箱在<a href="http://www.admin333.com/OrderQuery.html" target="_blank" style='color:red;'>此处查询</a>已购买的卡密。<br/>
 
-        <p></p>
+        <p>请一定注意选择要下载的软件！！！</p>
         <form id="myform" method="post" name="myform" target="_blank" onsubmit="return checkForm()">
+
+
+            <input  style="width: 350px" type="text" id="email" name="email" placeholder="请输入卡密" /><br/>
+
             <!--订单自定义项目-->
-            请选择卡面额：
+            请选择要下载的软件：
             <select name="productId" style="width:180px;background-color:#13a3ff">
                 <option value="199793">卡密 面额 0.5 元</option>
                 <option value="199794" selected="selected">卡密 面额 1.0 元</option>
@@ -31,8 +34,6 @@
                 <option value="199797">卡密 面额 5.0 元</option>
                 <option value="199798">卡密 面额 10 元</option>
             </select>
-            （下拉可以选择不同面额，1-10元）<br/>
-
 
             <a href="javascript:void(0);" title="点击更换验证码">
                 <img id="imgVerify" src="/verify/getVerify" alt="更换验证码" height="36" width="20%"
@@ -44,7 +45,7 @@
                    maxlength="4">
 
             然后，<input type="submit" id="btn-submit" style="background-color:#13a3ff"
-                      value="点这里，提交订单，扫码付款">
+                      value="点这提交，提取下载链接">
             <noscript>
                 <div id="noscript_msg" class="msg"><font color="red" size=5>
                     </br>你的浏览器禁用了JavaScript，系统无法获取订单信息！</br></br>
@@ -64,10 +65,6 @@
 <script th:src="@{/admin/js/base.js}"></script>
 <script type="text/javascript">
     var url = "/verify/getVerify?" + Math.random();
-    // window.onload = function(){
-    //
-    //     $("#imgVerify").attr('src',url);
-    // };
 
     $("#email").mailAutoComplete();
 
@@ -90,7 +87,7 @@
                         success: function (result) {
                             if (result && result.success) {
                                 window.location.reload();
-                                window.open("http://www.admin333.com/ShopProduct-"+result.payload+".html","_blank");
+                                window.open("http://www.admin333.com/Pay-"+result.payload+".html","_blank");
                             } else {
                                 tale.alertError(result.msg || '登录失败');
                             }

@@ -1,9 +1,7 @@
 package com.song.blog;
 
-import com.arronlong.httpclientutil.HttpClientUtil;
-import com.arronlong.httpclientutil.common.HttpConfig;
-import com.arronlong.httpclientutil.common.HttpMethods;
 import com.song.blog.dto.Product;
+import com.song.blog.utils.HttpClientUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.LoggerFactory;
@@ -30,17 +28,22 @@ public class BlogApplicationTests {
         product.setUserPaymentId("5135946");
 
 
+
 //        LOGGER.debug(product.toString());
 //        HttpConfig config = HttpConfig.custom().method(HttpMethods.POST).url(SHOPURL + "199793.html").map(product.toMap());
 //
 //        String resultHtml = HttpClientUtil.post(config);
 
-//        String resultHtml = HttpClientUtils.doPost(SHOPURL + "199793.html",null,product.toMap()).getContent();
 
-        String resultHtml  = HttpClientUtil.post( HttpConfig.custom()
-                .method(HttpMethods.POST)
-                .url("http://www.admin333.com/ShopProduct-199793.html")
-                .map(product.toMap()));
+        String resultHtml = HttpClientUtils.doPost("http://www.admin333.com/ShopProduct-199793.html",
+                null,
+                product.toMap()).getContent();
+
+//
+//        String resultHtml  = HttpClientUtil.post( HttpConfig.custom()
+//                .method(HttpMethods.POST)
+//                .url("http://www.admin333.com/ShopProduct-199793.html")
+//                .map(product.toMap()));
 
         LOGGER.debug(resultHtml);
 

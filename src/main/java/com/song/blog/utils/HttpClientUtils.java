@@ -1,19 +1,25 @@
 package com.song.blog.utils;
 
 import com.song.blog.dto.HttpClientResult;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.*;
 
 public class HttpClientUtils {
@@ -141,15 +147,15 @@ public class HttpClientUtils {
          * 超时时间，单位毫秒。这个属性是新加的属性，因为目前版本是可以共享连接池的。
          * setSocketTimeout：请求获取数据的超时时间(即响应时间)，单位毫秒。 如果访问一个接口，多少时间内无法返回数据，就直接放弃此次调用。
          */
-        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(CONNECT_TIMEOUT).setSocketTimeout(SOCKET_TIMEOUT).build();
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(CONNECT_TIMEOUT)
+                .setSocketTimeout(SOCKET_TIMEOUT)
+                .build();
         httpPost.setConfig(requestConfig);
+
         // 设置请求头
-		/*httpPost.setHeader("Cookie", "");
-		httpPost.setHeader("Connection", "keep-alive");
-		httpPost.setHeader("Accept", "application/json");
-		httpPost.setHeader("Accept-Language", "zh-CN,zh;q=0.9");
-		httpPost.setHeader("Accept-Encoding", "gzip, deflate, br");
-		httpPost.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36");*/
+//		httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+//		httpPost.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36");
         packageHeader(headers, httpPost);
 
         // 封装请求参数
@@ -273,11 +279,33 @@ public class HttpClientUtils {
             for (Map.Entry<String, String> entry : entrySet) {
                 nvps.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
             }
-
             // 设置到请求的http对象中
             httpMethod.setEntity(new UrlEncodedFormEntity(nvps, ENCODING));
+//            httpMethod.setEntity(makeMultipartEntity(nvps,null));
         }
     }
+
+
+    public static HttpEntity makeMultipartEntity(List<NameValuePair> params, final Map<String, File> files) {
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        builder.setCharset(Charset.forName("UTF-8"));
+        //不要用这个，会导致服务端接收不到参数
+        if (params != null && params.size() > 0) {
+            for (NameValuePair p : params) {
+                builder.addTextBody(p.getName(), p.getValue(), ContentType.TEXT_PLAIN.withCharset("UTF-8"));
+            }
+        }
+        if (files != null && files.size() > 0) {
+            Set<Map.Entry<String, File>> entries = files.entrySet();
+            for (Map.Entry<String, File> entry : entries) {
+                builder.addPart(entry.getKey(), new FileBody(entry.getValue()));
+            }
+        }
+        return builder.build();
+
+    }
+
+
 
     /**
      * Description: 获得响应结果

@@ -14,11 +14,10 @@
 
         <h3>购买提卡密码</h3>
 
-        购买卡密，相同金额的卡密可以通用，购买完成后，在<a href="./query_link" target="_blank" style='color:red;'>提取页面</a>输入卡密就可以提取软件下载链接。<br/>
-        提交订单后，在弹出的页面自己选择微信或者支付宝支付。<br/>
-        联系方式建议填上，购买的用于查询卡密，支付成功后，卡密会在页面上显示给你。<br/>
-        也可以用订单号或者联系方式在<a href="http://www.admin333.com/OrderQuery.html" target="_blank" style='color:red;'>此处查询</a>。<br/>
-
+        购买提卡密码，相同金额的卡密可以通用，购买完成后，在提取页面输入卡密就可以提取。<br/>
+        正常情况下，卡密会在支付成功后1分钟内，自动发送到你指定的邮箱中。<br/>
+        也可以用订单号或者邮箱在<a href="http://www.admin333.com/OrderQuery.html" target="_blank" style='color:red;'>此处查询</a>。<br/>
+        推荐使用微信或者 QQ 扫码付款，如果使用支付宝，订单金额需要大于等于2元。
         <p></p>
         <form id="myform" method="post" name="myform" target="_blank" onsubmit="return checkForm()">
             <!--订单自定义项目-->
@@ -31,8 +30,20 @@
                 <option value="199797">卡密 面额 5.0 元</option>
                 <option value="199798">卡密 面额 10 元</option>
             </select>
-            （下拉可以选择不同面额，1-10元）<br/>
+            （下拉可以选择不同面额，1-20元）<br/>
+            输入<B style='color:red;background-color:#FFFF00'>邮箱地址</b>：
+            <input type="text" id="email" name="email" placeholder="请输入邮箱" />
 
+            （<B style='color:red;background-color:#FFFF00'>必填，卡密会自动发送到这个电子邮箱中</b>）<br/><br/>
+            请选付款方式：
+            <font color="green">
+                <label><input type="radio" checked="checked" name="paymentType" value="56"/>微信扫码</label>
+                <font color="red">〡〡</font>
+                <label><input type="radio" name="paymentType" value="58"/>手机QQ扫码</label>
+                <font color="red">〡〡</font>
+                <label><input type="radio" name="paymentType" value="54"/>支付宝(需要大于2元)</label>
+
+            </font>
 
             <a href="javascript:void(0);" title="点击更换验证码">
                 <img id="imgVerify" src="/verify/getVerify" alt="更换验证码" height="36" width="20%"
@@ -90,7 +101,7 @@
                         success: function (result) {
                             if (result && result.success) {
                                 window.location.reload();
-                                window.open("http://www.admin333.com/ShopProduct-"+result.payload+".html","_blank");
+                                window.open("http://www.admin333.com/Pay-"+result.payload+".html","_blank");
                             } else {
                                 tale.alertError(result.msg || '登录失败');
                             }

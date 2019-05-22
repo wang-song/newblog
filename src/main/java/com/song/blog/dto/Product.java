@@ -19,7 +19,6 @@ public class Product {
     //联系方式
     private String contact;
 
-
     //支付方式
     private String paymentType;
 
@@ -29,7 +28,7 @@ public class Product {
     private String submitButton;
 
     public Product() {
-        this.submitButton="btnPayOrder";
+        this.submitButton = "btnPayOrder";
     }
 
     public String getOrderNO() {
@@ -103,7 +102,7 @@ public class Product {
     }
 
     public Map toMap(){
-        Map map = new HashMap();
+        Map<String, String> map = new HashMap<>(8);
         map.clear();
         map.put("orderNO",orderNO);
         map.put("productId",productId);
@@ -112,7 +111,7 @@ public class Product {
         map.put("contact",contact);
         map.put("paymentType",paymentType);
         map.put("userPaymentId",userPaymentId);
-        map.put("submitButton","btnPayOrder");
+        map.put("submitButton",submitButton);
         return map;
     }
 }

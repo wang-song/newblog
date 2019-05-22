@@ -48,7 +48,7 @@ public class WebConst {
     public static final int HIT_EXCEED = 10;
 
     /**
-     * 上传文件最大1M
+     * 上传文件最大2M
      */
     public static Integer MAX_FILE_SIZE = 2048000;
 
@@ -58,7 +58,7 @@ public class WebConst {
     public static String SUCCESS_RESULT = "SUCCESS";
 
     /**
-     * 同一篇文章在2个小时内无论点击多少次只算一次阅读
+     * 同一篇文章在1个小时内无论点击多少次只算一次阅读
      */
-    public static Integer HITS_LIMIT_TIME = 7200;
+    public static Integer HITS_LIMIT_TIME = 3600;
 }
